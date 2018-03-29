@@ -1,5 +1,6 @@
 import csv
 import random
+#Changes
 
 COORDINATES = []
 CENTROID = []
