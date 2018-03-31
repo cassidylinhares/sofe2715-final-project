@@ -4,6 +4,7 @@ import random
 
 COORDINATES = []
 CENTROID = []
+clusters = []
 K = 0
 NUM_POINTS = 0
 xMin = 100000
@@ -46,12 +47,19 @@ def euclideanDist(p1, p2):
     y = p1[1] - p2[1]
     return sqrt(pow(x,2) + pow(y,2))
 
+def generateClusterArray():
+    for i in range(len(CENTROID)):
+        clusters.append([])
+
 def assignCluster():
     minDist = []
-    for points in range(COORDINATES):
-        for center in range(CENTROID):
-            minDist.append(euclideanDist(CENTROID[center],COORDINATES[points]))
-
+    generateClusterArray()
+    for point in COORDINATES:
+        minDist = []
+        for i in range(len(CENTROID)):
+            minDist.append([euclideanDist(CENTROID[i],point), i])
+        minDist.sort(key=lambda pt: pt[0])
+        clusters[minDist[0][1]].append(point)
 
 
 
