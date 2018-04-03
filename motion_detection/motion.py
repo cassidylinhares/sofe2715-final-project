@@ -52,7 +52,11 @@ pygame.display.set_caption("SOFE2715 - Motion Detection")
 while running:
     for event in pygame.event.get():
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (event.type == pygame.QUIT):
+=======
+        if event.type == pygame.QUIT:
+>>>>>>> 0bf1205e99b24122ec7afc28600e8ecc8b7eb26a
 =======
         if event.type == pygame.QUIT:
 >>>>>>> 0bf1205e99b24122ec7afc28600e8ecc8b7eb26a
