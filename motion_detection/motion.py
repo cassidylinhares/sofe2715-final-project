@@ -45,7 +45,8 @@ pygame.display.set_caption("SOFE2715 - Motion Detection")
 #begin main loop
 while running:
     for event in pygame.event.get():
-		if event.type == pygame.QUIT: running = False
+        if (event.type == pygame.QUIT):
+            running = False
     currentFrame = N.array(pygame.surfarray.array3d(cam.get_image()))
     screen.fill((0,0,0))
     if (not isFirstFrame):
