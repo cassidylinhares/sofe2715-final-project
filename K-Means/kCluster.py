@@ -2,14 +2,13 @@ import csv
 import random
 import math
 import plotly.plotly as py
-import plotly.tools as tool
-import matplotlib.pyplot as plot
+import plotly.graph_objs as go
 #Changes
 
 COORDINATES = []
 CENTROID = []
 clusters = []
-K = 2
+K = 3
 NUM_POINTS = 0
 XMIN = 1.5
 XMAX = 4.1
@@ -103,7 +102,7 @@ def converge():
     diffY = 0
     step = 0
     shift = []
-    readIntoFile("test.csv")
+    readIntoFile("exercise-1.csv")
     generateInitialK()
     assignCluster()
     clusterAvg(step)
@@ -116,18 +115,21 @@ def converge():
             print("Difference: " + str(diffX) + ", " + str(diffY))
 
     i = 0
-    if(abs(shift[i][0]) > 0.05 and abs(shift[i][1]) > 0.05):
+
+    while(i < len(shift) and (abs(shift[i][0]) > 0.02 and abs(shift[i][1]) > 0.02)):
+        i +=1
         step += K
         assignCluster()
         clusterAvg(step)
-        if(i < len(shift)):
-            i +=1
+    print("Indec " + str(i) + " Diff len: " + str(len(shift)))
+
 
 def graph():
     cluster_plot = []
     k_plot = []
-    colours = ['b', 'g', 'm', 'y', 'c']
-    text = iter(['Cluster 1', 'Cluster 2', 'Cluster 3', 'Cluster 4', 'Cluster 5'])
+    trace = []
+    center_point = []
+    colours = ['rgb(0, 0, 255)', 'rgb(0, 128, 0)', 'rgb(255, 0, 0)', 'rgb(0, 255, 255)', 'rgb(255, 191, 0)']
 
     for pts in range(len(CENTROID)-1, len(CENTROID)-(1+K),-1):
         k_plot.append(CENTROID[pts])
@@ -137,16 +139,41 @@ def graph():
 
     for ln in range(len(cluster_plot)):
         for pt in range(len(cluster_plot[ln])):
-            group = plot.scatter(cluster_plot[ln][pt][0], cluster_plot[ln][pt][1], marker='o', color= colours[ln])
-        k = plot.scatter(k_plot[ln], k_plot[ln], marker='x', color= colours[ln])
-
-    mpl_fig = plot.gcf()
-    plotly_fig = tool.mpl_to_plotly(mpl_fig)
-    for dat in plotly_fig['data']:
-        t = text.next()
-        dat.update({'name': t, 'text':t})
-    plotly_fig['layout']['showlegend'] = True
-    py.plot(plotly_fig)
+            trace.append(go.Scatter(
+                x = cluster_plot[ln][pt][0],
+                y = cluster_plot[ln][pt][1],
+                name = 'Cluster ' + str(ln+1),
+                mode = 'markers',
+                marker = dict(
+                    size = 7,
+                    color = colours[ln],
+                    line = dict(
+                        width = 2,
+                        color = 'rgb(102, 102, 102)'
+                    )
+                )
+            ))
+        center_point.append(go.Scatter(
+            x = k_plot[ln][0],
+            y = k_plot[ln][1],
+            name = 'Centroid ' + str(ln+1),
+            mode = 'markers',
+            marker = dict(
+                size = 12,
+                color = 'rgb(0, 0, 0)',
+                line = dict(
+                    width = 2,
+                )
+            )
+        ))
+    data = []
+    for i in trace:
+        data.append(i)
+    for i in center_point:
+        data.append(i)
+    layout = dict(title= 'Clusters', yaxis = dict(zeroline = False), xaxis = dict(zeroline = False))
+    fig = dict(data = data, layout = layout)
+    py.iplot(fig, filename= 'clusters')
 
 
 converge()
