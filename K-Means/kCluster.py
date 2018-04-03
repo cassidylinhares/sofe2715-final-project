@@ -3,24 +3,26 @@ import random
 import math
 import plotly.plotly as py
 import plotly.graph_objs as go
-#Changes
+#plotly to plot graph
 
 COORDINATES = []
 CENTROID = []
 clusters = []
-K = 3
+K = 4
 NUM_POINTS = 0
-XMIN = 1.5
-XMAX = 4.1
-YMIN = 0.1
-YMAX = 2.3
+XMIN = -26
+XMAX = 26
+YMIN = -26
+YMAX = 26
 
-def readIntoFile(filename):
+
+def readIntoFile(filename):     #read csv file and store into coordinates array
     with open(filename, "r") as f:
         reader = csv.reader(f)
         minX = minY = 10000
         maxX = maxY = -10000
         for line in reader:
+            #find max and min x and y values to generate initial values
             if (float(line[0]) > maxX):
                 XMAX = float(line[0])
                 maxX = float(line[0])
@@ -33,113 +35,120 @@ def readIntoFile(filename):
             if (float(line[1]) < minY):
                 YMIN = float(line[1])
                 minY = float(line[1])
-            COORDINATES.append([float(line[0]),float(line[1])])
-
+            COORDINATES.append([float(line[0]),float(line[1])]) #COORDINATES[[x,y]]
     NUM_POINTS = len(COORDINATES)
     for point in COORDINATES:
         print("Points: " + str(point))
     print("max: (" + str(XMAX) + ", " + str(YMAX) + ")")
     print("min: (" + str(XMIN) + ", " + str(YMIN) + ")")
 
-def generateInitialK():
+def generateInitialK(): #generate N number of centroids using min & max as bounds
     for center in range(K):
-        CENTROID.append([random.uniform(XMIN,XMAX), random.uniform(YMIN,YMAX)])
+        CENTROID.append([random.uniform(XMIN,XMAX), random.uniform(YMIN,YMAX)]) #add to centroid array [[x,y]]
     for kPoint in CENTROID:
         print("Centroid:"  + str(kPoint))
 
-def euclideanDist(p1, p2):
+def euclideanDist(p1, p2): #calculate distance between 2 given points
     x = p1[0] - p2[0]
     y = p1[1] - p2[1]
-    return math.sqrt(math.pow(x,2) + math.pow(y,2))
+    return math.sqrt(math.pow(x,2) + math.pow(y,2)) #using the euclidean distance
 
-def generateClusterArray():
+def generateClusterArray(): #make an empty array with N number of Clusters
     for i in range(K):
         clusters.append([])
 
-def assignCluster():
+def assignCluster(): #assign each point to the proper cluster
     minDist = []
     generateClusterArray()
     for point in COORDINATES:
         minDist = []
+        #goin backwards through centroid array and only going for the # of clusters
         for i in range(len(CENTROID)-1, len(CENTROID)-(1+K),-1):
+            #check distance between point with each centroid [[distance, index]]
             minDist.append([float(euclideanDist(CENTROID[i],point)), int(i)])
-        minDist.sort(key=lambda pt: pt[0])
-        clusters[minDist[0][1]].append(point)
-    for cluster in clusters:
-        print("Cluster: "+ str(cluster))
-    print("length: " + str(len(clusters)))
+        minDist.sort(key=lambda pt: pt[0]) #sort by the distance
+        clusters[minDist[0][1]].append(point) #put the point with smallest distance in proper cluster
+        #clusters[cluster0[[x,y],[x,y]], cluster1[[x,y],[x,y]]]
+    print("Cluster length: " + str(len(clusters)))
 
 
 def clusterAvg(step):
     sumX = 0
     sumY = 0
-    size = 0
+    size = 1
     print("Step: " + str(step))
-    for eachClust in range(step, len(clusters)):
+    for eachClust in range(step, len(clusters)): #go through the last K clusters
         sumX = 0
         sumY = 0
         for ptInClust in range(len(clusters[eachClust])):
-            size = len(clusters[eachClust])
-
-            if(size>1):
+            if(len(clusters[eachClust]) >1):
                 sumX += clusters[eachClust][ptInClust][0]
                 sumY += clusters[eachClust][ptInClust][1]
-            elif(size == 1):
+                size = len(clusters[eachClust])
+            elif(len(clusters[eachClust]) == 1):
                 sumX = clusters[eachClust][ptInClust][0]
                 sumY = clusters[eachClust][ptInClust][1]
-            elif(size == 0) :
+                size = len(clusters[eachClust])
+            elif(len(clusters[eachClust]) <= 0) :
+                size = len(clusters[eachClust])+1
                 sumX = random.uniform(XMIN,XMAX)
                 sumY = random.uniform(YMIN,YMAX)
-                size = 1
         print("Cluster size: " + str(size) + " sum X: " + str(sumX))
-        CENTROID.append([sumX/size, sumY/size])
+        CENTROID.append([sumX/size, sumY/size]) #calculate avg of points in each cluster
         print("length: " + str(len(clusters)) + " Index: " + str(eachClust))
     for center in CENTROID:
         print(center)
 
-def converge():
+def converge(file, threshHold):
     diffX = 0
     diffY = 0
     step = 0
     shift = []
-    readIntoFile("exercise-1.csv")
+    readIntoFile(file)
     generateInitialK()
     assignCluster()
     clusterAvg(step)
 
-    for i in range(len(CENTROID)):
+    for i in range(step, len(CENTROID)): #get differences bewteen first generated centroid and centroid after avg is taken
         for j in range(i+K, len(CENTROID)):
             diffX = CENTROID[i][0] - CENTROID[j][0]
             diffY = CENTROID[i][1] - CENTROID[j][1]
             shift.append([float(diffX), float(diffY)])
-            print("Difference: " + str(diffX) + ", " + str(diffY))
+            print("Difference1: " + str(diffX) + ", " + str(diffY))
 
     i = 0
-
-    while(i < len(shift) and (abs(shift[i][0]) > 0.02 and abs(shift[i][1]) > 0.02)):
+    #repeat assignment of points to clusters and averaging new centroids if difference between centroids is above acceptable limit
+    #or keep repeating until end of shift array. Shift of 0 means that there is no shift in centroids
+    while(i < len(shift) and (abs(shift[i][0]) > threshHold and abs(shift[i][1]) > threshHold)):
         i +=1
-        step += K
+        step += K #to know which clusters to check avg of. Get avg of last K clusters
         assignCluster()
         clusterAvg(step)
+        for i in range(step, len(CENTROID)): #recalculate difference for most recent calculated centroids, and add them to shift array
+            for j in range(i+K, len(CENTROID)):
+                diffX = CENTROID[i][0] - CENTROID[j][0]
+                diffY = CENTROID[i][1] - CENTROID[j][1]
+                shift.append([float(diffX), float(diffY)])
+                print("Difference: " + str(diffX) + ", " + str(diffY))
     print("Indec " + str(i) + " Diff len: " + str(len(shift)))
 
 
-def graph():
+def graph(): #plot with plotly
     cluster_plot = []
     k_plot = []
     trace = []
     center_point = []
     colours = ['rgb(0, 0, 255)', 'rgb(0, 128, 0)', 'rgb(255, 0, 0)', 'rgb(0, 255, 255)', 'rgb(255, 191, 0)']
 
-    for pts in range(len(CENTROID)-1, len(CENTROID)-(1+K),-1):
+    for pts in range(len(CENTROID)-1, len(CENTROID)-(1+K),-1): #grab the most recent centroids
         k_plot.append(CENTROID[pts])
 
-    for pts in range(len(clusters)-1, len(clusters)-(1+K),-1):
+    for pts in range(len(clusters)-1, len(clusters)-(1+K),-1): #grab most recent cluster
         cluster_plot.append(clusters[pts])
 
     for ln in range(len(cluster_plot)):
         for pt in range(len(cluster_plot[ln])):
-            trace.append(go.Scatter(
+            trace.append(go.Scattergl( #make a trace for each point cluster
                 x = cluster_plot[ln][pt][0],
                 y = cluster_plot[ln][pt][1],
                 name = 'Cluster ' + str(ln+1),
@@ -153,7 +162,7 @@ def graph():
                     )
                 )
             ))
-        center_point.append(go.Scatter(
+        center_point.append(go.Scattergl( #make a trace for each centroid
             x = k_plot[ln][0],
             y = k_plot[ln][1],
             name = 'Centroid ' + str(ln+1),
@@ -173,8 +182,8 @@ def graph():
         data.append(i)
     layout = dict(title= 'Clusters', yaxis = dict(zeroline = False), xaxis = dict(zeroline = False))
     fig = dict(data = data, layout = layout)
-    py.iplot(fig, filename= 'clusters')
+    py.iplot(fig, filename= 'clusters') #plot data
 
 
-converge()
+converge("exercise-6.csv", 0.2)
 graph()

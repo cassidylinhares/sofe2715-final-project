@@ -1,7 +1,7 @@
-int numOfBalls = 1000; 
+int numOfBalls = 10000; 
 int columns = 80;
 int rows = 40;
-int addPerFrame = numOfBalls / 10;
+int addPerFrame = 1;
 ArrayList<Ball> balls = new ArrayList<Ball>();
 Graph g;
 int stepCount = 0;
