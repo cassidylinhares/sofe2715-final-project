@@ -102,7 +102,7 @@ def converge(file, threshHold):
     clusterAvg(step)
 
     for i in range(step, len(CENTROID)): #get differences bewteen first generated centroid and centroid after avg is taken
-        for j in range(i+K, len(CENTROID)):
+        for j in range(step):
             diffX = CENTROID[i][0] - CENTROID[j][0]
             diffY = CENTROID[i][1] - CENTROID[j][1]
             shift.append([float(diffX), float(diffY)])
@@ -111,17 +111,18 @@ def converge(file, threshHold):
     i = 0
     #repeat assignment of points to clusters and averaging new centroids if difference between centroids is above acceptable limit
     #or keep repeating until end of shift array. Shift of 0 means that there is no shift in centroids
-    while(i < len(shift) and (abs(shift[i][0]) > threshHold and abs(shift[i][1]) > threshHold)):
+    while(i <= 15)#len(shift) and (abs(shift[i][0]) > threshHold and abs(shift[i][1]) > threshHold)):
         i +=1
         step += K #to know which clusters to check avg of. Get avg of last K clusters
         assignCluster()
         clusterAvg(step)
+        '''
         for i in range(step, len(CENTROID)): #recalculate difference for most recent calculated centroids, and add them to shift array
-            for j in range(i+K, len(CENTROID)):
+            for j in range(step):
                 diffX = CENTROID[i][0] - CENTROID[j][0]
                 diffY = CENTROID[i][1] - CENTROID[j][1]
                 shift.append([float(diffX), float(diffY)])
-                print("Difference: " + str(diffX) + ", " + str(diffY))
+                print("Difference: " + str(diffX) + ", " + str(diffY))'''
     print("Indec " + str(i) + " Diff len: " + str(len(shift)))
 
 
