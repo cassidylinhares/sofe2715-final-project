@@ -111,7 +111,7 @@ def converge(file, threshHold):
     i = 0
     #repeat assignment of points to clusters and averaging new centroids if difference between centroids is above acceptable limit
     #or keep repeating until end of shift array. Shift of 0 means that there is no shift in centroids
-    while(i <= 15)#len(shift) and (abs(shift[i][0]) > threshHold and abs(shift[i][1]) > threshHold)):
+    while(i <= 15):#len(shift) and (abs(shift[i][0]) > threshHold and abs(shift[i][1]) > threshHold)):
         i +=1
         step += K #to know which clusters to check avg of. Get avg of last K clusters
         assignCluster()
