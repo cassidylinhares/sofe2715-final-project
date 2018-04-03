@@ -52,7 +52,7 @@ currentPoint = shortest_x[1]
 # while loop until return to left-most
 while True:
     # add the point to the hull array
-    hullArray.append(pointArray[p])
+    hullArray.append(pointArray[currentPoint])
     # next point inside pointArray
     searchPoint = (currentPoint + 1) % len(pointArray)
     # find most counter-clockwise point
