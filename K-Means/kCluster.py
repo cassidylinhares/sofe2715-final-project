@@ -8,12 +8,12 @@ import plotly.graph_objs as go
 COORDINATES = []
 CENTROID = []
 clusters = []
-K = 2
+K = 4
 NUM_POINTS = 0
-XMIN = 0
-XMAX = 0.28
-YMIN = 0
-YMAX = 0.59
+XMIN = -26
+XMAX = 26
+YMIN = -26
+YMAX = 26
 
 
 def readIntoFile(filename):     #read csv file and store into coordinates array
@@ -69,9 +69,7 @@ def assignCluster(): #assign each point to the proper cluster
         minDist.sort(key=lambda pt: pt[0]) #sort by the distance
         clusters[minDist[0][1]].append(point) #put the point with smallest distance in proper cluster
         #clusters[cluster0[[x,y],[x,y]], cluster1[[x,y],[x,y]]]
-    for cluster in clusters:
-        print("Cluster: "+ str(cluster))
-    print("length: " + str(len(clusters)))
+    print("Cluster length: " + str(len(clusters)))
 
 
 def clusterAvg(step):
@@ -187,5 +185,5 @@ def graph(): #plot with plotly
     py.iplot(fig, filename= 'clusters') #plot data
 
 
-converge("exercise-5.csv", 0.02)
+converge("exercise-6.csv", 0.2)
 graph()
