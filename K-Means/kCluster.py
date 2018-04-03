@@ -8,41 +8,34 @@ import plotly.graph_objs as go
 COORDINATES = []
 CENTROID = []
 clusters = []
-K = 4
-NUM_POINTS = 0
-XMIN = -26
-XMAX = 26
-YMIN = -26
-YMAX = 26
 
+K = 3
 
 def readIntoFile(filename):     #read csv file and store into coordinates array
     with open(filename, "r") as f:
         reader = csv.reader(f)
-        minX = minY = 10000
-        maxX = maxY = -10000
         for line in reader:
             #find max and min x and y values to generate initial values
-            if (float(line[0]) > maxX):
-                XMAX = float(line[0])
-                maxX = float(line[0])
-            if (float(line[1]) > maxY):
-                YMAX = float(line[1])
-                maxY = float(line[1])
-            if (float(line[0]) < minX):
-                XMIN = float(line[0])
-                minX = float(line[0])
-            if (float(line[1]) < minY):
-                YMIN = float(line[1])
-                minY = float(line[1])
             COORDINATES.append([float(line[0]),float(line[1])]) #COORDINATES[[x,y]]
-    NUM_POINTS = len(COORDINATES)
     for point in COORDINATES:
         print("Points: " + str(point))
-    print("max: (" + str(XMAX) + ", " + str(YMAX) + ")")
-    print("min: (" + str(XMIN) + ", " + str(YMIN) + ")")
 
 def generateInitialK(): #generate N number of centroids using min & max as bounds
+    #minX = minY = 10000
+    #maxX = maxY = -10000
+    XMIN = YMIN = 10000
+    XMAX = YMAX = -10000
+    for pt in COORDINATES:
+        if pt[0] > XMAX:
+            XMAX = pt[0]
+        if pt[1] > YMAX:
+            YMAX = pt[1]
+        if pt[0]  < XMIN:
+            XMIN = pt[0]
+        if pt[1]  < YMIN:
+            YMIN = pt[1]
+    print("max: (" + str(XMAX) + ", " + str(YMAX) + ")")
+    print("min: (" + str(XMIN) + ", " + str(YMIN) + ")")
     for center in range(K):
         CENTROID.append([random.uniform(XMIN,XMAX), random.uniform(YMIN,YMAX)]) #add to centroid array [[x,y]]
     for kPoint in CENTROID:
@@ -70,7 +63,6 @@ def assignCluster(): #assign each point to the proper cluster
         clusters[minDist[0][1]].append(point) #put the point with smallest distance in proper cluster
         #clusters[cluster0[[x,y],[x,y]], cluster1[[x,y],[x,y]]]
     print("Cluster length: " + str(len(clusters)))
-
 
 def clusterAvg(step):
     sumX = 0
@@ -184,6 +176,11 @@ def graph(): #plot with plotly
     fig = dict(data = data, layout = layout)
     py.iplot(fig, filename= 'clusters') #plot data
 
-
-converge("exercise-6.csv", 0.2)
+file = input("Enter filename: ")
+tolerance = input("Enter tolerance level: ")
+K_in = input("Enter number of clusters (must be between 2-5): ")
+while int(K_in) > 5 or int(K_in) < 2:
+    K_in = input("INVALID. Enter number of clusters (must be between 2-5): ")
+K = int(K_in)
+converge(str(file), float(tolerance))
 graph()
