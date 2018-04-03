@@ -2,20 +2,26 @@
 import pygame
 import random
 
+# main loop state var
 running = True
 
+# window dimensions
 win = {
     "width": 800,
     "height": 800
 }
 
 
-def orientation(p, q, r):
-    val = ((q[1] - p[1]) * (r[0] - q[0])) - ((q[0] - p[0]) * (r[1] - q[1]))
-    if val == 0:
+def orientation(a, b, c):
+        # calc orient from 3 points
+    orient = ((b[1] - a[1]) * (c[0] - b[0])) - ((b[0] - a[0]) * (c[1] - b[1]))
+    # 0 = no rotation (points are linear)
+    if orient == 0:
         return 0
-    if val > 0:
+    # 1 = clockwise
+    if orient > 0:
         return 1
+    # 2 = counter-clockwise
     else:
         return 2
 
