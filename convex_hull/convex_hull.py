@@ -66,7 +66,7 @@ while True:
     if currentPoint == shortest_x[1]:
         break
 # print the complete hull array
-print hullArray
+print(hullArray)
 # begin main loop
 while running:
     # check for quit event
