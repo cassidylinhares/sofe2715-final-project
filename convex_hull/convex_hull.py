@@ -12,19 +12,12 @@ win = {
     "height": 800
 }
 
-<<<<<<< HEAD
-#calc angle between 3 points
-def orientation(p, q, r):
-    val = ((q[1] - p[1]) * (r[0] - q[0])) - ((q[0] - p[0]) * (r[1] - q[1]))
-    if val == 0:
-=======
 
 def orientation(a, b, c):
         # calc orient from 3 points
     orient = ((b[1] - a[1]) * (c[0] - b[0])) - ((b[0] - a[0]) * (c[1] - b[1]))
     # 0 = no rotation (points are linear)
     if orient == 0:
->>>>>>> 671a9f2b9b5c61d276f3480303999ef563cdac05
         return 0
     # 1 = clockwise
     if orient > 0:
@@ -84,15 +77,11 @@ while True:
     if currentPoint == shortest_x[1]:
         break
 # print the complete hull array
-<<<<<<< HEAD
 print hullArray
 #calc runtime in ms
 opEnd = datetime.now()
 delta = opEnd - opStart
 print "Processing Time: " + str(delta.total_seconds()) + "s"
-=======
-print(hullArray)
->>>>>>> 671a9f2b9b5c61d276f3480303999ef563cdac05
 # begin main loop
 while running:
     # check for quit event
