@@ -1,16 +1,26 @@
-int numOfBalls = 10000; 
-int columns = 80;
-int rows = 40;
-int addPerFrame = 1;
+int numOfBalls = 100000; 
+int columns = 40;
+int rows = 20;
+int addPerFrame = 1000;
 ArrayList<Ball> balls = new ArrayList<Ball>();
 Graph g;
 int stepCount = 0;
 
 void setup() {
-  frameRate(1000);
+  frameRate(60);
   size(1200, 800);
   g = new Graph(width / (columns));
   balls.add(new Ball(columns % 2 == 0 ? columns / 2 : (columns - 1)/2, rows));
+}
+
+Boolean sketchDone() {
+  int doneCount = 0;
+  for (int i = 0; i < balls.size(); i++) {
+    if (balls.get(i).didFall()) {
+      doneCount++; 
+    }
+  }
+  return doneCount >= balls.size();
 }
 
 void draw() {
@@ -32,4 +42,8 @@ void draw() {
   }
   g.draw(d);
   text(stepCount, 50, -height + 50);
+  if (sketchDone()) {
+    print("Processing Time: ", millis()/1000.0, "s");
+    noLoop();
+  }
 }

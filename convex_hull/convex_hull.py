@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import pygame
 import random
+from datetime import datetime
 
 running = True
 
@@ -9,7 +10,7 @@ win = {
     "height": 800
 }
 
-
+#calc angle between 3 points
 def orientation(p, q, r):
     val = ((q[1] - p[1]) * (r[0] - q[0])) - ((q[0] - p[0]) * (r[1] - q[1]))
     if val == 0:
@@ -19,6 +20,9 @@ def orientation(p, q, r):
     else:
         return 2
 
+#get user input for number of points to draw the hull around
+numOfPoints = 100
+numOfPoints = input("Number of points: ")
 
 # start pygame
 pygame.init()
@@ -31,20 +35,21 @@ pygame.display.set_caption("SOFE2715 - Convex Hull")
 # create array for points
 pointArray = []
 # define number of points to generate
-numOfPoints = 100
+
 # set shortest_x to width of window and an index of -1
 shortest_x = (win['width'], -1)
 # generate all points and check for left-most
 for i in range(0, numOfPoints):
         # random x/y inside window
-    x = random.randint(100, 700)
-    y = random.randint(100, 700)
+    x = random.randint(50, 750)
+    y = random.randint(50, 750)
     # find shortest x (left-most)
     if (x < shortest_x[0]):
         shortest_x = (x, i)
         # add the new points to the array
     pointArray.append((x, y))
 
+opStart = datetime.now()
 # add array for points that make convex-hull
 hullArray = []
 # start at left most
@@ -67,6 +72,10 @@ while True:
         break
 # print the complete hull array
 print hullArray
+#calc runtime in ms
+opEnd = datetime.now()
+delta = opEnd - opStart
+print "Processing Time: " + str(delta.total_seconds()) + "s"
 # begin main loop
 while running:
     # check for quit event

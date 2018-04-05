@@ -12,15 +12,19 @@ class Graph {
     int[] sorted = sort(d);
     int maxHeight = sorted[sorted.length-1];
     for (int i = 0; i < d.length; i++) {
-      float factor = (map(d[i], 0, maxHeight, 0, 12)); 
+      float factor = map(d[i], 0, maxHeight, 0, 12); 
       fill(0,255,0);
       stroke(0,0,255);
       strokeWeight(5);
       rect(5 + (i * w), 5, w, -10 + (-50 * factor));
-      textAlign(CENTER);
+      textAlign(LEFT);
       fill(0);
-      textSize(20);
-      text(d[i], 5 + (i * w) + (w/2), (-50 * factor) - 20);
+      textSize(w);
+      pushMatrix();
+      translate(5 + (i * w) + (w/2), (-50 * factor) - 20);
+      rotate(-PI/2.0);
+      text(d[i], 0,5);
+      popMatrix();
     }
   }
 }
