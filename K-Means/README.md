@@ -10,5 +10,5 @@
     - "exercise-5.csv"
     - "exercise-6.csv"
 5. Enter the number of iterations (best results with 100 iterations) hit enter after
-6. Enter the number of clusters (must be between 2-6 clusters) hit enter after
+6. Enter the number of clusters (must be between 2-6 clusters) hit enter after  
 *Note: this program will only work with the exercises from this folder*
