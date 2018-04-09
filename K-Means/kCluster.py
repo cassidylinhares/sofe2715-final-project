@@ -172,7 +172,7 @@ def graph(): #plot with plotly
     pygame.quit()
 
 #user input for filename, iterations, no. clusters
-file = input("Enter filename (csv): ")
+file = raw_input("Enter filename (csv): ")
 iteration = input("Enter iterations: ")
 K_in = input("Enter number of clusters: ")
 while int(K_in) > 6 or int(K_in) < 2:
